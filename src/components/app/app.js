@@ -2,29 +2,43 @@ import React, { Component } from 'react';
 import { Col, Row, Container } from 'reactstrap';
 import Header from '../header';
 import RandomChar from '../randomChar';
+import ErrorMessage from '../errorMessage';
+import CharacterPage from '../characterPage';
+import GotService from '../../services/gotService';
+
 import ItemList from '../itemList';
 import CharDetails from '../charDetails';
 
-
 export default class App extends Component {
 
-	constructor() {
-		super();
-	}
+	gotService = new GotService();
 
 	state = {
-		isVisibleRandomChar: true
+		isVisibleRandomChar: true,
+		error: false
 	}
 
-	onToggleRandomChar = () => {
-		const { isVisibleRandomChar } = this.state;
+	componentDidCatch() {
 		this.setState({
-			isVisibleRandomChar: !isVisibleRandomChar
+			error: true
 		});
 	}
 
+	onToggleRandomChar = () => {
+		this.setState(state => ({
+			isVisibleRandomChar: !state.isVisibleRandomChar
+		}));
+	};
+
+
+
 	render() {
-		const { isVisibleRandomChar } = this.state;
+		const { isVisibleRandomChar, error } = this.state;
+
+		if (error) {
+			return <ErrorMessage />
+		}
+
 		const randomChar = isVisibleRandomChar ? <RandomChar /> : null;
 
 		return (
@@ -43,12 +57,27 @@ export default class App extends Component {
 							<button className="btn btn-info mb-5" onClick={this.onToggleRandomChar}>Toggle random character</button>
 						</Col>
 					</Row>
+					<CharacterPage />
 					<Row>
 						<Col md='6'>
-							<ItemList />
+							<ItemList onCharSelected={this.onCharSelected}
+								getData={this.gotService.getAllBooks}
+								renderItem={item => item.name}
+							/>
 						</Col>
 						<Col md='6'>
-							<CharDetails />
+							<CharDetails charId={this.state.selectedChar} />
+						</Col>
+					</Row>	<Row>
+						<Col md='6'>
+							<ItemList
+								onCharSelected={this.onCharSelected}
+								getData={this.gotService.getAllHouses}
+								renderItem={(item => `${item.name} `)}
+							/>
+						</Col>
+						<Col md='6'>
+							<CharDetails charId={this.state.selectedChar} />
 						</Col>
 					</Row>
 				</Container>

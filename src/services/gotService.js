@@ -4,7 +4,7 @@ export default class GotService {
 		this._apiBase = 'https://www.anapioficeandfire.com/api';
 	}
 
-	async getResource(url) {
+	getResource = async (url) => {
 		const res = await fetch(`${this._apiBase}${url}`);
 
 		if (!res.ok) {
@@ -14,44 +14,57 @@ export default class GotService {
 		return await res.json();
 	}
 
-	async getAllCharacters() {
+	getAllCharacters = async () => {
 		const res = await this.getResource('/characters?page=5&pageSize=10');
-		return res.map(this._transformCharacter);
+		return res.map(this._transformCharacter.bind(this));
 	}
 
-	async getCharacter(id) {
+	getCharacter = async (id) => {
 		const character = await this.getResource(`/characters/${id}`);
 		return this._transformCharacter(character);
 	}
 
-	async getAllHouses() {
+	getAllHouses = async () => {
 		const res = await this.getResource('/houses');
-		return res.map(this._transformHouse);
+		return res.map(this._transformHouse.bind(this));
 	}
 
-	async getHouse(id) {
+	getHouse = async (id) => {
 		const house = await this.getResource(`/houses/${id}`);
 		return this._transformHouse(house);
 	}
-	async getAllBooks() {
+	getAllBooks = async () => {
 		const res = await this.getResource('/books');
-		return res.map(this._transformBook);
+		return res.map(this._transformBook.bind(this));
 	}
 
-	async getBook(id) {
+	getBook = async (id) => {
 		const book = await this.getResource(`/books/${id}`);
 		return this._transformBook(book);
 	}
 
-	_transformCharacter({ name, gender, born, died, culture }) {
-		return { name, gender, born, died, culture };
+	_transformCharacter({ url, name, gender, born, died, culture }) {
+		const id = this._getIdFromUrl(url);
+
+		return { id, name, gender, born, died, culture };
 	}
 
-	_transformHouse({ name, region, words, titles, overlord, ancestralWeapons }) {
-		return { name, region, words, titles, overlord, ancestralWeapons };
+	_transformHouse({ url, name, region, words, titles, overlord, ancestralWeapons }) {
+		const id = this._getIdFromUrl(url);
+
+		return { id, name, region, words, titles, overlord, ancestralWeapons };
 	}
 
-	_transformBook({ name, numberOfPages, publiser, released }) {
-		return { name, numberOfPages, publiser, released };
+	_transformBook({ url, name, numberOfPages, publiser, released }) {
+		const id = this._getIdFromUrl(url);
+
+		return { id, name, numberOfPages, publiser, released };
+	}
+
+	_getIdFromUrl(url) {
+		const index = url.split('').reverse().join('').indexOf('/');
+		const id = +url.slice(url.length - index);
+
+		return id;
 	}
 }
