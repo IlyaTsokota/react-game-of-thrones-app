@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import './itemDetails.scss';
-import GotService from '../../services/gotService';
 import Spinner from '../spinner';
 import ErrorMessage from '../errorMessage';
 
@@ -18,11 +17,10 @@ export { Field };
 
 export default class ItemDetails extends Component {
 
-	gotService = new GotService();
 
 	state = {
 		loading: true,
-		char: null,
+		item: null,
 		error: false
 	};
 
@@ -64,7 +62,9 @@ export default class ItemDetails extends Component {
 			return;
 		}
 
-		this.gotService.getCharacter(itemId)
+		const { getDetails } = this.props;
+
+		getDetails(itemId)
 			.then(this.onItemLoaded)
 			.catch(this.onError);
 	}
