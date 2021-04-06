@@ -7,7 +7,7 @@ import CharacterPage from '../characterPage';
 import GotService from '../../services/gotService';
 
 import ItemList from '../itemList';
-import CharDetails from '../charDetails';
+import ItemDetails from '../itemDetails';
 
 export default class App extends Component {
 
@@ -60,24 +60,24 @@ export default class App extends Component {
 					<CharacterPage />
 					<Row>
 						<Col md='6'>
-							<ItemList onCharSelected={this.onCharSelected}
+							<ItemList onItemSelected={this.onItemSelected}
 								getData={this.gotService.getAllBooks}
 								renderItem={item => item.name}
 							/>
 						</Col>
 						<Col md='6'>
-							<CharDetails charId={this.state.selectedChar} />
+							<ItemDetails itemId={this.state.selectedChar} />
 						</Col>
 					</Row>	<Row>
 						<Col md='6'>
 							<ItemList
-								onCharSelected={this.onCharSelected}
+								onItemSelected={this.onItemSelected}
 								getData={this.gotService.getAllHouses}
 								renderItem={(item => `${item.name} `)}
 							/>
 						</Col>
 						<Col md='6'>
-							<CharDetails charId={this.state.selectedChar} />
+							<ItemDetails itemId={this.state.selectedChar} />
 						</Col>
 					</Row>
 				</Container>
