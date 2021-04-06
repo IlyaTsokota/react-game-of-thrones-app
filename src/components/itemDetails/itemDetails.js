@@ -33,9 +33,8 @@ export default class ItemDetails extends Component {
 	onError = () => {
 		this.setState({
 			error: true,
-			loading: false,
-
-		})
+			item: null
+		});
 	}
 
 	componentDidMount() {
@@ -50,7 +49,7 @@ export default class ItemDetails extends Component {
 		if (this.props.itemId !== prevProps.itemId) {
 			this.setState({
 				loading: true
-			})
+			});
 			this.updateItem();
 		}
 	}
@@ -74,10 +73,11 @@ export default class ItemDetails extends Component {
 		const { item, loading, error } = this.state;
 
 		if (error) {
-			return <ErrorMessage />
+			return <ErrorMessage />;
 		}
-		if (!item) {
-			return <span className='select-error'>Please select a character</span>
+
+		if (!item && this.props.showPlaceholder) {
+			return <span className='select-error'>Please select item in the list</span>;
 		}
 
 		if (loading) {
@@ -105,3 +105,8 @@ export default class ItemDetails extends Component {
 
 	}
 }
+
+
+ItemDetails.defaultProps = {
+	showPlaceholder: true
+};
